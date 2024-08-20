@@ -1,16 +1,12 @@
 apiVersion: v1
 kind: Service
-
 metadata:
-  name: metabase-service    #! Nombre
+  name: wp-sitio
   labels:
-    run: metabase-service
-
+    run: wp-sitio
 spec:
-  ports:    #! Puertos a exponer.
-  - port: 3000    #! Puerto del servicio.
-    name: metabase    
-    targetPort: 3000  #! Puerto del Pod.
-
-  selector:   #! Pods a los que el servicio debe dirigir el tráfico.
-    run: metabase
+  ports:
+    - port: 80
+      name: wp-sitio
+  selector:
+    run: wp-sitio

@@ -1,16 +1,12 @@
 apiVersion: v1
 kind: Service
-
 metadata:
-  name: db-svc    #! Nombre.
+  name: wp-sitio-db
   labels:
-    run: db-svc
-
+    run: wp-sitio-db
 spec:
-  ports:   #! Puertos a exponer.
-  - port: 3306   #! Puerto del servicio.
-    name: db-sts
-    targetPort: 3306  #! Puerto del Pod.
-
-  selector:   #! Pods a los que el servicio debe dirigir el tráfico.
-    run: db-sts   
+  ports:
+    - port: 3306
+      name: wp-sitio-db
+  selector:
+    run: wp-sitio-db

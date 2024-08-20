@@ -1,96 +1,59 @@
 apiVersion: apps/v1
 kind: StatefulSet
-
 metadata:
-  name: db-sts    #! Nombre del StatefulSet.
+  name: wp-sitio-db
   labels:
-    run: db-sts
-
+    run: wp-sitio-db
 spec:
   selector:
     matchLabels:
-      run: db-sts
-  serviceName: "db-sts"
-  
+      run: wp-sitio-db
+  serviceName: 'wp-sitio-db'
   template:
     metadata:
-      generateName: db-sts   #! Nombre base para los Pods.
+      generateName: wp-sitio-db
       labels:
-        run: db-sts
-
+        run: wp-sitio-db
     spec:
-      initContainers:  #! Contenedores que se ejecutan antes del contenedor principal.
-      - name: "remove-lost-found"
-        image: "busybox:1.25.0"
-        imagePullPolicy: "IfNotPresent"
-        command:  ["rm", "-fr", "/var/lib/mysql/lost+found"]
-        volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
-          
-      containers:  #! Contenedor principal.
+      initContainers:
+        - name: 'remove-lost-found'
+          image: 'busybox:1.25.0'
+          imagePullPolicy: 'IfNotPresent'
+          command: ['rm', '-fr', '/var/lib/mysql/lost+found']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      containers:
         - name: wp-sitio-db
           image: mysql:5.7
           imagePullPolicy: IfNotPresent
-          
-          env:  #! Variables de entorno.
-            - name: MYSQL_DATABASE  #! Nombre de la DB.
+          env:
+            - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: db-name
-
-            - name: MYSQL_ROOT_PASSWORD  #! Contraseña DB.
+                  name: wp-sitio-db-sec
+                  key: MYSQL_DATABASE
+            - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: db-pass
-
-            - name: MYSQL_ROOT_USERNAME  #! Usuario DB.
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: db-user
-
-          ports:  #! Puertos que el contenedor escuchará.
-            - name: db-sts
+                  name: wp-sitio-db-sec
+                  key: MYSQL_ROOT_PASSWORD
+          ports:
+            - name: wp-sitio-db
               containerPort: 3306
-          
           volumeMounts:
-            - mountPath: "/var/lib/mysql"
+            - mountPath: '/var/lib/mysql'
               name: mysql-data
-
-            - mountPath: "/docker-entrypoint-initdb.d"
-              name: mysql-data
-              readOnly: false
-
-      volumes: 
-        - name: db-secret
+      volumes:
+        - name: wp-sitio-db-sec
           secret:
-            secretName: db-secret
+            secretName: wp-sitio-db-sec
 
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: mysql-data
-
-        - name: mysql-volume
-          persistentVolumeClaim:
-            claimName: mysql-volume
-        
-
-  volumeClaimTemplates:  #! Volúmenes persistentes.
+  volumeClaimTemplates:
     - metadata:
         name: mysql-data
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: ['ReadWriteOnce']
         resources:
           requests:
-            storage: 1Gi
-
-    - metadata:
-        name: mysql-volume
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
+            storage: 10Gi
