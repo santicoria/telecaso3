@@ -1,65 +1,65 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: wp-sitio
+  name: mb-sitio
   labels:
-    run: wp-sitio
+    run: mb-sitio
 spec:
   selector:
     matchLabels:
-      run: wp-sitio
-  serviceName: 'wp-sitio'
+      run: mb-sitio
+  serviceName: 'mb-sitio'
   template:
     metadata:
-      generateName: wp-sitio
+      generateName: mb-sitio
       labels:
-        run: wp-sitio
+        run: mb-sitio
     spec:
       containers:
-        - name: wp-sitio
-          image: wordpress:php7.4-apache
+        - name: mb-sitio
+          image: metabase/metabase
           imagePullPolicy: IfNotPresent
           env:
-            - name: WORDPRESS_DB_HOST
+            - name: METABASE_DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-sec
-                  key: WORDPRESS_DB_HOST
-            - name: WORDPRESS_DB_USER
+                  name: mb-sitio-sec
+                  key: METABASE_DB_HOST
+            - name: METABASE_DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-sec
-                  key: WORDPRESS_DB_USER
-            - name: WORDPRESS_DB_PASSWORD
+                  name: mb-sitio-sec
+                  key: METABASE_DB_USER
+            - name: METABASE_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-sec
-                  key: WORDPRESS_DB_PASSWORD
-            - name: WORDPRESS_DB_NAME
+                  name: mb-sitio-sec
+                  key: METABASE_DB_PASSWORD
+            - name: METABASE_DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-sec
-                  key: WORDPRESS_DB_NAME
+                  name: mb-sitio-sec
+                  key: METABASE_DB_NAME
 
           ports:
-            - name: wp-sitio
+            - name: mb-sitio
               containerPort: 80
           volumeMounts:
             - mountPath: '/var/www/html'
-              name: wp-sitio-data
+              name: mb-sitio-data
 
           lifecycle:
             postStart:
               exec:
                 command: ['/bin/sh', '-c', 'chmod 555 /var/www/html']
       volumes:
-        - name: wp-sitio-sec
+        - name: mb-sitio-sec
           secret:
-            secretName: wp-sitio-sec
+            secretName: mb-sitio-sec
 
   volumeClaimTemplates:
     - metadata:
-        name: wp-sitio-data
+        name: mb-sitio-data
       spec:
         accessModes: ['ReadWriteOnce']
         resources:

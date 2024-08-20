@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Secret
 data:
-  WORDPRESS_DB_HOST: d3Atc2l0aW8tZGI=
-  WORDPRESS_DB_NAME: d3Atc2l0aW8=
-  WORDPRESS_DB_PASSWORD: YjBkOWI2MDljOWE5ZDQ2YmEyNzNkYjA4MGU2ZTAwNmY=
-  WORDPRESS_DB_USER: cm9vdA==
+  METABASE_DB_HOST: d3Atc2l0aW8tZGI=
+  METABASE_DB_NAME: d3Atc2l0aW8=
+  METABASE_DB_PASSWORD: YjBkOWI2MDljOWE5ZDQ2YmEyNzNkYjA4MGU2ZTAwNmY=
+  METABASE_DB_USER: cm9vdA==
 metadata:
   creationTimestamp: null
-  name: wp-sitio-sec
+  name: mb-sitio-sec
 # comando:
 # kubectl create secret generic mb-sec \
 #     --from-literal=mb-db-type=mysql \

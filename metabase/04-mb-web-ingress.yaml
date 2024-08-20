@@ -5,7 +5,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: 'false'
-  name: wp-sitio-ing
+  name: mb-sitio-ing
 spec:
   rules:
     - host: coria-santiago-caso-3.my.kube.um.edu.ar
@@ -13,7 +13,7 @@ spec:
         paths:
           - backend:
               service:
-                name: wp-sitio
+                name: mb-sitio
                 port:
                   number: 80
             path: /

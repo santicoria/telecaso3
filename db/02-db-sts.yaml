@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: wp-sitio-db
+  name: mb-sitio-db
   labels:
-    run: wp-sitio-db
+    run: mb-sitio-db
 spec:
   selector:
     matchLabels:
-      run: wp-sitio-db
-  serviceName: 'wp-sitio-db'
+      run: mb-sitio-db
+  serviceName: 'mb-sitio-db'
   template:
     metadata:
-      generateName: wp-sitio-db
+      generateName: mb-sitio-db
       labels:
-        run: wp-sitio-db
+        run: mb-sitio-db
     spec:
       initContainers:
         - name: 'remove-lost-found'
@@ -24,30 +24,30 @@ spec:
             - name: mysql-data
               mountPath: /var/lib/mysql
       containers:
-        - name: wp-sitio-db
+        - name: mb-sitio-db
           image: mysql:5.7
           imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-db-sec
+                  name: mb-sitio-db-sec
                   key: MYSQL_DATABASE
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: wp-sitio-db-sec
+                  name: mb-sitio-db-sec
                   key: MYSQL_ROOT_PASSWORD
           ports:
-            - name: wp-sitio-db
+            - name: mb-sitio-db
               containerPort: 3306
           volumeMounts:
             - mountPath: '/var/lib/mysql'
               name: mysql-data
       volumes:
-        - name: wp-sitio-db-sec
+        - name: mb-sitio-db-sec
           secret:
-            secretName: wp-sitio-db-sec
+            secretName: mb-sitio-db-sec
 
   volumeClaimTemplates:
     - metadata:

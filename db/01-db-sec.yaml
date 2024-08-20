@@ -5,7 +5,7 @@ data:
   MYSQL_ROOT_PASSWORD: YjBkOWI2MDljOWE5ZDQ2YmEyNzNkYjA4MGU2ZTAwNmY=
 metadata:
   creationTimestamp: null
-  name: wp-sitio-db-sec
+  name: mb-sitio-db-sec
 # comando:
 # kubectl create secret generic db-secret \
 #     --from-literal=db-name=dataset \
