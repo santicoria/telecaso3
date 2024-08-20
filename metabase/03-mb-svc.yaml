@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: metabase-service    #! Nombre
+  labels:
+    run: metabase-service
+
+spec:
+  ports:    #! Puertos a exponer.
+  - port: 3000    #! Puerto del servicio.
+    name: metabase    
+    targetPort: 3000  #! Puerto del Pod.
+
+  selector:   #! Pods a los que el servicio debe dirigir el tráfico.
+    run: metabase

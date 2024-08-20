@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: db-svc    #! Nombre.
+  labels:
+    run: db-svc
+
+spec:
+  ports:   #! Puertos a exponer.
+  - port: 3306   #! Puerto del servicio.
+    name: db-sts
+    targetPort: 3306  #! Puerto del Pod.
+
+  selector:   #! Pods a los que el servicio debe dirigir el tráfico.
+    run: db-sts   

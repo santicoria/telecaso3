@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+
+  name: metabase-ingress #! Nombre.
+
+spec:
+  rules:
+    - host: coria-santiago-caso-3.my.kube.um.edu.ar #! Host al que se asocia el Ingress.
+      http:
+        paths:
+          - backend:
+              service:
+                name: metabase-service #! Nombre del servicio al que se dirige el tráfico.
+                port:
+                  number: 3000 #! Puerto del servicio al que se dirige el tráfico.
+            path: / #! Ruta dentro del host a la que se dirige el tráfico.
+            pathType: Prefix

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: metabase     #! Nombre del Deployment.
+  labels:
+    run: metabase
+
+spec:
+  replicas: 1         #! Número de réplicas del pod.
+  selector:
+    matchLabels:
+      run: metabase
+
+  template:
+    metadata:
+      generateName: metabase   #! Nombre base para los Pods.
+      labels:
+        run: metabase
+
+    spec:
+      restartPolicy: Always
+
+      containers:              #! Contenedor principal.
+        - name: metabase
+          image: metabase/metabase
+          imagePullPolicy: Always
+
+          ports:
+            - name: metabase
+              containerPort: 3000    #! Puerto del contenedor.
+
+          env:                      #! Variables de entorno.
+            - name: MB_DB_TYPE      #! Tipo de la DB.
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-type
+
+            - name: MB_DB_DBNAME    #! Nombre de la DB.
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-dbname
+
+            - name: MB_DB_PASS      #! Contraseña de la DB.
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-pass
+
+            - name: MB_DB_USER      #! Usuario de la DB.
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-user
+
+            - name: MB_DB_HOST      #! Host de la DB.
+              value: db-svc
+
+      volumes:
+        - name: metabase-secret
+          secret:
+            secretName: metabase-secret
