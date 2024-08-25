@@ -1,12 +1,10 @@
 apiVersion: v1
+data:
+  mb-db-dbname: ZGF0YXNldA==
+  mb-db-pass: dGVsZWRhdGFzZXQ=
+  mb-db-type: bXlzcWw=
+  mb-db-user: cm9vdA==
 kind: Secret
 metadata:
-  name: metabase-secrets
-type: Opaque
-data:
-  # Base64-encoded values
-  MB_DB_TYPE: <BASE64_ENCODED_DB_TYPE>
-  MB_DB_DBNAME: <BASE64_ENCODED_DB_NAME>
-  MB_DB_PORT: <BASE64_ENCODED_DB_PORT>
-  MB_DB_USER: <BASE64_ENCODED_DB_USER>
-  MB_DB_PASS: <BASE64_ENCODED_DB_PASSWORD>
+  creationTimestamp: null
+  name: mb-sec

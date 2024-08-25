@@ -1,19 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
+
 metadata:
-  name: mb-sitio-db
+  name: db-sts
   labels:
-    run: mb-sitio-db
+    run: db-sts
+
 spec:
   selector:
     matchLabels:
-      run: mb-sitio-db
-  serviceName: 'mb-sitio-db'
+      run: db-sts
+  serviceName: 'db-sts'
+
   template:
     metadata:
-      generateName: mb-sitio-db
+      generateName: db-sts
       labels:
-        run: mb-sitio-db
+        run: db-sts
+
     spec:
       initContainers:
         - name: 'remove-lost-found'
@@ -23,35 +27,67 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+
       containers:
-        - name: mb-sitio-db
-          image: mysql:8.4
+        - name: wp-sitio-db
+          image: mysql:latest
           imagePullPolicy: IfNotPresent
+
           env:
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: mb-sitio-db-sec
-                  key: MYSQL_DATABASE
+                  name: db-secret
+                  key: db-name
+
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mb-sitio-db-sec
-                  key: MYSQL_ROOT_PASSWORD
+                  name: db-secret
+                  key: db-pass
+
+            - name: MYSQL_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-user
+
           ports:
-            - name: mb-sitio-db
+            - name: db-sts
               containerPort: 3306
+
           volumeMounts:
             - mountPath: '/var/lib/mysql'
               name: mysql-data
+
+            - mountPath: '/docker-entrypoint-initdb.d'
+              name: mysql-data
+              readOnly: false
+
       volumes:
-        - name: mb-sitio-db-sec
+        - name: db-secret
           secret:
-            secretName: mb-sitio-db-sec
+            secretName: db-secret
+
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data
+
+        - name: mysql-volume
+          persistentVolumeClaim:
+            claimName: mysql-volume
 
   volumeClaimTemplates:
     - metadata:
         name: mysql-data
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi
+
+    - metadata:
+        name: mysql-volume
       spec:
         accessModes: ['ReadWriteOnce']
         resources:

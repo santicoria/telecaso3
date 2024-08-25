@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: metabase
+  labels:
+    run: metabase
+spec:
+  selector:
+    matchLabels:
+      run: metabase
+  serviceName: 'metabase'
+  template:
+    metadata:
+      generateName: metabase
+      labels:
+        run: metabase
+    spec:
+      containers:
+        - name: metabase
+          image: metabase/metabase
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MB_DB_HOST
+              value: db-svc
+            - name: MB_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-user
+            - name: MB_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-pass
+            - name: MB_DB_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mb-sec
+                  key: mb-db-dbname
+
+          ports:
+            - name: metabase
+              containerPort: 80
+          volumeMounts:
+            - mountPath: '/var/www/html'
+              name: mb-sitio-data
+
+          lifecycle:
+            postStart:
+              exec:
+                command: ['/bin/sh', '-c', 'chmod 555 /var/www/html']
+      volumes:
+        - name: metabase-secret
+          secret:
+            secretName: metabase-secret
+
+  volumeClaimTemplates:
+    - metadata:
+        name: mb-sitio-data
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi
